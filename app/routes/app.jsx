@@ -50,37 +50,57 @@ export default function AppLayout() {
     });
   };
 
-  const handleSavePopup = () => {
-    if (!currentPopupConfig) return;
+  // const handleSavePopup = () => {
+  //   if (!currentPopupConfig) return;
 
-    setMyPopups((prev) => {
-      // Logic to check if we are updating an existing one or adding new
-      const existingIndex = prev.findIndex((p) => p.id === currentPopupConfig.id);
+  //   setMyPopups((prev) => {
+  //     // Logic to check if we are updating an existing one or adding new
+  //     const existingIndex = prev.findIndex((p) => p.id === currentPopupConfig.id);
       
-      if (existingIndex > -1) {
-        const updated = [...prev];
-        updated[existingIndex] = {
-          ...updated[existingIndex],
-          name: currentPopupConfig.internalName,
-          config: currentPopupConfig,
-        };
-        return updated;
-      } else {
-        return [
-          ...prev,
-          {
-            id: currentPopupConfig.id,
-            name: currentPopupConfig.internalName,
-            status: "active",
-            views: 0,
-            clicks: 0,
-            config: currentPopupConfig,
-          },
-        ];
-      }
-    });
-    setCurrentPopupConfig(null);
-  };
+  //     if (existingIndex > -1) {
+  //       const updated = [...prev];
+  //       updated[existingIndex] = {
+  //         ...updated[existingIndex],
+  //         name: currentPopupConfig.internalName,
+  //         config: currentPopupConfig,
+  //       };
+  //       return updated;
+  //     } else {
+  //       return [
+  //         ...prev,
+  //         {
+  //           id: currentPopupConfig.id,
+  //           name: currentPopupConfig.internalName,
+  //           status: "active",
+  //           views: 0,
+  //           clicks: 0,
+  //           config: currentPopupConfig,
+  //         },
+  //       ];
+  //     }
+  //   });
+  //   setCurrentPopupConfig(null);
+  // };
+
+const handleSavePopup = async () => {
+  if (!currentPopupConfig) return;
+
+  const res = await fetch("/api/popups/save", {
+    method: "POST",
+    credentials: "include", // 🔥 CRITICAL
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(currentPopupConfig),
+  });
+
+  if (!res.ok) {
+    console.error("Save failed");
+    return;
+  }
+
+  setCurrentPopupConfig(null);
+};
 
   const handleDeletePopup = (id) => {
     setMyPopups((prev) => prev.filter((p) => p.id !== id));

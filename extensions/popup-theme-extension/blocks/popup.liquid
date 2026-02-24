@@ -3,7 +3,7 @@
   window.EXPLI_APP_URL = "{{ app.metafields.expli.app_url }}";
 </script>
 
-{{ 'popup.js' | asset_url | script_tag }}
+<script src="{{ 'popup.js' | asset_url }}" defer></script>
 
 {% schema %}
 {

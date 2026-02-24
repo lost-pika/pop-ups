@@ -1,0 +1,14 @@
+<script>
+  window.EXPLI_SHOP = "{{ shop.permanent_domain }}";
+  window.EXPLI_APP_URL = "{{ app.metafields.expli.app_url }}";
+</script>
+
+{{ 'popup.js' | asset_url | script_tag }}
+
+{% schema %}
+{
+  "name": "Expli Popup",
+  "target": "head",
+  "settings": []
+}
+{% endschema %}

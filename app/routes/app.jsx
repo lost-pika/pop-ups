@@ -86,13 +86,13 @@ const handleSavePopup = async () => {
   if (!currentPopupConfig) return;
 
   const res = await fetch("/api/popups/save", {
-    method: "POST",
-    credentials: "include", // 🔥 CRITICAL
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(currentPopupConfig),
-  });
+  method: "POST",
+  credentials: "include",   // IMPORTANT
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(currentPopupConfig),
+});
 
   if (!res.ok) {
     console.error("Save failed");

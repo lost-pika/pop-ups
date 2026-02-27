@@ -5,11 +5,13 @@ export async function action({ request }) {
   const { session } = await authenticate.admin(request);
 
   if (!session?.shop) {
-    return Response.json({ error: "No shop session" }, { status: 401 });
+    return Response.json(
+      { error: "No shop session" },
+      { status: 401 }
+    );
   }
 
   const shopDomain = session.shop;
-
   const body = await request.json();
 
   const shop = await prisma.shop.upsert({

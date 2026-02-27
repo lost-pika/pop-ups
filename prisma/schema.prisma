@@ -35,25 +35,23 @@ model Session {
 
 model Shop {
   id         String   @id @default(cuid())
-  domain     String   @unique
+  shopDomain String   @unique
   createdAt  DateTime @default(now())
 
   popups     Popup[]
 }
 
 model Popup {
-  id         String   @id @default(cuid())
+  id        String   @id @default(cuid())
+  shopId    String
+  name      String
+  isActive  Boolean  @default(false)
+  config    Json
 
-  shopId     String
-  shop       Shop @relation(fields: [shopId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  name       String
-  isActive   Boolean @default(false)
+  shop Shop @relation(fields: [shopId], references: [id])
 
-  config     Json
-
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@index([shopId, isActive])
+  @@index([shopId])
 }

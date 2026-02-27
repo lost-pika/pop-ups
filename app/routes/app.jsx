@@ -1,7 +1,7 @@
 import { Outlet, useLoaderData } from "react-router";
 import { AppProvider } from "@shopify/shopify-app-react-router/react";
 import { authenticate } from "../shopify.server";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 
 export const loader = async ({ request }) => {
@@ -99,12 +99,40 @@ const handleSavePopup = async () => {
     return;
   }
 
-  setCurrentPopupConfig(null);
+  await loadPopups();   // ← refresh from DB
+setCurrentPopupConfig(null);
 };
 
   const handleDeletePopup = (id) => {
     setMyPopups((prev) => prev.filter((p) => p.id !== id));
   };
+
+  const loadPopups = async () => {
+  try {
+    const res = await fetch(
+  "/api/popups/list?shop=currency-switcher-app-2.myshopify.com",
+  {
+    credentials: "include",
+  }
+);
+
+    if (!res.ok) return;
+
+    const data = await res.json();
+    setMyPopups(
+  (data || []).map(p => ({
+    ...p,
+    name: p.name || p.config?.internalName || "Untitled",
+  }))
+);
+  } catch (err) {
+    console.error("Failed loading popups", err);
+  }
+};
+
+useEffect(() => {
+  loadPopups();
+}, []);
 
   return (
     <AppProvider embedded apiKey={apiKey}>

@@ -117,7 +117,7 @@ export default function DashboardView(props) {
                         {popup.name}
                       </h4>
                       <p className="text-[10px] text-gray-400 font-bold uppercase mt-0.5">
-                        {popup.config.type} • {popup.config.position}
+                        {popup.config?.type || "POPUP"} • {popup.config?.position || "modal"}
                       </p>
                     </div>
                   </div>

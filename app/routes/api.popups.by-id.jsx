@@ -7,39 +7,37 @@ const corsHeaders = {
 };
 
 export async function loader({ request }) {
-  // --- CORS preflight ---
+
+  // CORS preflight
   if (request.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   const url = new URL(request.url);
-  const shop = url.searchParams.get("shop");
+
+  const shopDomain = url.searchParams.get("shop");
+  const id = url.searchParams.get("id");
+
+  if (!shopDomain || !id) {
+    return Response.json(null, { headers: corsHeaders });
+  }
+
+  const shop = await prisma.shop.findUnique({
+    where: { shopDomain },
+  });
 
   if (!shop) {
     return Response.json(null, { headers: corsHeaders });
   }
 
- const dbShop = await prisma.shop.findUnique({
-  where: {
-    shopDomain: shop,
-  },
-});
+  const popup = await prisma.popup.findFirst({
+    where: {
+      id,
+      shopId: shop.id,
+    },
+  });
 
-  if (!dbShop) {
-    return Response.json(null, { headers: corsHeaders });
-  }
-
-  const popups = await prisma.popup.findMany({
-  where: {
-    shopId: dbShop.id,
-    isActive: true,
-  },
-  orderBy: {
-    createdAt: "desc",
-  },
-});
-
-return Response.json(popups, {
-  headers: corsHeaders,
-});
+  return Response.json(popup, {
+    headers: corsHeaders,
+  });
 }

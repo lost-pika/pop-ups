@@ -116,6 +116,9 @@ export default function DashboardView(props) {
                       <h4 className="font-bold text-gray-900 text-base">
                         {popup.name}
                       </h4>
+                      <p className="text-xs text-gray-400 mt-1">
+  Popup ID: {popup.id}
+</p>
                       <p className="text-[10px] text-gray-400 font-bold uppercase mt-0.5">
                         {popup.config?.type || "POPUP"} • {popup.config?.position || "modal"}
                       </p>

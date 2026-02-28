@@ -1,14 +1,22 @@
 <script>
-  window.EXPLI_SHOP = "{{ shop.permanent_domain }}";
-  window.EXPLI_APP_URL = "https://pop-ups-two.vercel.app";
-</script>
+  window.EXPLI_POPUPS = window.EXPLI_POPUPS || [];
 
-<script src="{{ 'popup.js' | asset_url }}" defer></script>
+  window.EXPLI_POPUPS.push({
+    popupId: "{{ block.settings.popup_id }}"
+  });
+</script>
 
 {% schema %}
 {
   "name": "Expli Popup",
-  "target": "head",
-  "settings": []
+  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "popup_id",
+      "label": "Popup ID",
+      "info": "Paste popup ID from Expli dashboard"
+    }
+  ]
 }
 {% endschema %}

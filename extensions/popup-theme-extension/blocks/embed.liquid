@@ -1,0 +1,16 @@
+<script>
+  window.EXPLI_POPUPS = window.EXPLI_POPUPS || [];
+
+  window.EXPLI_SHOP = "{{ shop.permanent_domain }}";
+  window.EXPLI_APP_URL = "https://pop-ups-two.vercel.app";
+</script>
+
+<script src="{{ 'popup.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Expli Popup Engine",
+  "target": "head",
+  "settings": []
+}
+{% endschema %}

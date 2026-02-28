@@ -2,7 +2,9 @@
   window.EXPLI_POPUPS = window.EXPLI_POPUPS || [];
 
   window.EXPLI_POPUPS.push({
-    popupId: "{{ block.settings.popup_id }}"
+    popupId: "{{ block.settings.popup_id }}",
+    shop: "{{ shop.permanent_domain }}",
+    appUrl: "https://pop-ups-two.vercel.app"
   });
 </script>
 

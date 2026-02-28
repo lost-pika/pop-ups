@@ -27,40 +27,33 @@
     const instances = window.EXPLI_POPUPS || [];
     if (!instances.length) return;
 
-    for (const instance of instances) {
-      initPopup(instance);
-    }
+    for (const [index, instance] of instances.entries()) {
+  initPopup(instance, index);
+}
   }
 
   // ===== FETCH POPUP =====
-  async function initPopup({ popupId }) {
-    if (!popupId) return;
+ async function initPopup({ shop, appUrl, popupId }, index){
+  if (!popupId) return;
 
-    const shop = window.EXPLI_SHOP;
-    const appUrl = window.EXPLI_APP_URL;
+  try {
+    const res = await fetch(
+      `${appUrl}/api/popups/by-id?shop=${shop}&id=${popupId}`
+    );
 
-    if (!shop || !appUrl) return;
+    if (!res.ok) return;
 
-    try {
-      const res = await fetch(
-        `${appUrl}/api/popups/by-id?shop=${shop}&id=${popupId}`
-      );
+    const popup = await res.json();
 
-      if (!res.ok) return;
+    // 🔥 IMPORTANT LINE
+    if (!popup || !popup.config) return;
 
-      const popups = await res.json();
+   renderPopup(popup.config, index);
 
-if (!Array.isArray(popups)) return;
-
-popups.forEach((popup, index) => {
-  if (!popup?.config) return;
-  renderPopup(popup.config, index);
-});
-
-    } catch (err) {
-      console.error("Expli popup error:", err);
-    }
+  } catch (err) {
+    console.error("Expli popup error:", err);
   }
+}
 
   // ===== RENDER =====
   function renderPopup(config, index){

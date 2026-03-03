@@ -6,26 +6,25 @@ import { AppContext } from "../context/AppContext";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
+
   return {
     apiKey: process.env.SHOPIFY_API_KEY || "",
+    isEmbedEnabled: true, // 🔁 Later we will replace with real embed detection
   };
 };
 
 export default function AppLayout() {
-  const { apiKey } = useLoaderData();
-  
-  // App State
+  const { apiKey, isEmbedEnabled } = useLoaderData();
+
   const [myPopups, setMyPopups] = useState([]);
   const [currentPopupConfig, setCurrentPopupConfig] = useState(null);
   const [previewMode, setPreviewMode] = useState("desktop");
-  const [appEmbedEnabled, setAppEmbedEnabled] = useState(true);
-
-  // --- HANDLERS ---
+  const [appEmbedEnabled] = useState(isEmbedEnabled);
 
   const handleUseTemplate = (template) => {
     setCurrentPopupConfig({
       ...template,
-      id: `popup_${Date.now()}`, 
+      id: `popup_${Date.now()}`,
       internalName: `Draft ${template.name}`,
       status: "active",
       overlayOpacity: 40,
@@ -50,89 +49,56 @@ export default function AppLayout() {
     });
   };
 
-  // const handleSavePopup = () => {
-  //   if (!currentPopupConfig) return;
+  const handleSavePopup = async () => {
+    if (!currentPopupConfig) return;
 
-  //   setMyPopups((prev) => {
-  //     // Logic to check if we are updating an existing one or adding new
-  //     const existingIndex = prev.findIndex((p) => p.id === currentPopupConfig.id);
-      
-  //     if (existingIndex > -1) {
-  //       const updated = [...prev];
-  //       updated[existingIndex] = {
-  //         ...updated[existingIndex],
-  //         name: currentPopupConfig.internalName,
-  //         config: currentPopupConfig,
-  //       };
-  //       return updated;
-  //     } else {
-  //       return [
-  //         ...prev,
-  //         {
-  //           id: currentPopupConfig.id,
-  //           name: currentPopupConfig.internalName,
-  //           status: "active",
-  //           views: 0,
-  //           clicks: 0,
-  //           config: currentPopupConfig,
-  //         },
-  //       ];
-  //     }
-  //   });
-  //   setCurrentPopupConfig(null);
-  // };
+    const res = await fetch("/api/popups/save", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(currentPopupConfig),
+    });
 
-const handleSavePopup = async () => {
-  if (!currentPopupConfig) return;
+    if (!res.ok) {
+      console.error("Save failed");
+      return;
+    }
 
-  const res = await fetch("/api/popups/save", {
-  method: "POST",
-  credentials: "include",   // IMPORTANT
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(currentPopupConfig),
-});
-
-  if (!res.ok) {
-    console.error("Save failed");
-    return;
-  }
-
-  await loadPopups();   // ← refresh from DB
-setCurrentPopupConfig(null);
-};
+    await loadPopups();
+    setCurrentPopupConfig(null);
+  };
 
   const handleDeletePopup = (id) => {
     setMyPopups((prev) => prev.filter((p) => p.id !== id));
   };
 
   const loadPopups = async () => {
-  try {
-    const res = await fetch(
-  "/api/popups/list?shop=currency-switcher-app-2.myshopify.com",
-  {
-    credentials: "include",
-  }
-);
+    try {
+      const res = await fetch(
+        "/api/popups/list?shop=currency-switcher-app-2.myshopify.com",
+        { credentials: "include" }
+      );
 
-    if (!res.ok) return;
+      if (!res.ok) return;
 
-    const data = await res.json();
-    setMyPopups(
-  (data || []).map(p => ({
-    ...p,
-    name: p.name || p.config?.internalName || "Untitled",
-  }))
-);
-  } catch (err) {
-    console.error("Failed loading popups", err);
-  }
-};
+      const data = await res.json();
 
-useEffect(() => {
-  loadPopups();
-}, []);
+      setMyPopups(
+        (data || []).map((p) => ({
+          ...p,
+          name: p.name || p.config?.internalName || "Untitled",
+        }))
+      );
+    } catch (err) {
+      console.error("Failed loading popups", err);
+    }
+  };
+
+  useEffect(() => {
+    loadPopups();
+  }, []);
 
   return (
     <AppProvider embedded apiKey={apiKey}>
@@ -142,11 +108,11 @@ useEffect(() => {
         <s-link href="/app/editor">Editor</s-link>
         <s-link href="/app/settings">Settings</s-link>
       </s-app-nav>
+
       <AppContext.Provider
         value={{
           myPopups,
           appEmbedEnabled,
-          setAppEmbedEnabled,
           currentPopupConfig,
           setCurrentPopupConfig,
           previewMode,

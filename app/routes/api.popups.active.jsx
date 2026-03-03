@@ -29,10 +29,14 @@ export async function loader({ request }) {
     return Response.json(null, { headers: corsHeaders });
   }
 
-  const popups = await prisma.popup.findMany({
+const popups = await prisma.popup.findMany({
   where: {
     shopId: dbShop.id,
     isActive: true,
+  },
+  select: {
+    id: true,
+    config: true,
   },
   orderBy: {
     createdAt: "desc",

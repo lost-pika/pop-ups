@@ -1,17 +1,20 @@
 import React from "react";
 import { Plus, LayoutTemplate, Eye, Zap, Edit, Trash2, ToggleLeft, ToggleRight, Sparkles, ArrowRight, ExternalLink } from "lucide-react";
 import { AnalyticsCard } from "./ui";
+import { useAppBridge } from "@shopify/app-bridge-react";
 
 export default function DashboardView(props) {
   const {
+    shop,
     isNewUser,
     appEmbedEnabled,
-    setAppEmbedEnabled,
     onCreateNew,
     myPopups,
     onEditPopup,
     onDeletePopup,
   } = props;
+
+  const app = useAppBridge();
 
   return (
     <div className="max-w-full mx-auto space-y-6 animate-in fade-in duration-500 px-4 md:px-8">
@@ -26,18 +29,31 @@ export default function DashboardView(props) {
       <p className="text-xs md:text-sm text-gray-500">Your pop-ups are currently visible based on your rules.</p>
     </div>
   </div>
-  <div className="flex items-center space-x-3 shrink-0">
-    <button onClick={() => setAppEmbedEnabled(!appEmbedEnabled)} className="flex items-center space-x-2 bg-white px-3 py-1.5 border border-gray-300 rounded-xl shadow-sm hover:bg-gray-50 transition-colors">
-      {appEmbedEnabled ? <ToggleRight className="text-[#008060]" size={24} /> : <ToggleLeft className="text-gray-400" size={24} />}
-      <span className="text-[10px] font-black uppercase tracking-widest">{appEmbedEnabled ? "On" : "Off"}</span>
-    </button>
-    {/* <button onClick={onOpenThemeEditor} className="px-4 py-2 bg-[#008060] text-white rounded-xl text-xs font-bold shadow-sm hover:bg-[#006e52] flex items-center transition-all whitespace-nowrap">
-      <ExternalLink size={14} className="mr-2" /> Open Theme Editor
-    </button> */}
-    <button  className="px-4 py-2 bg-[#008060] text-white rounded-xl text-xs font-bold shadow-sm hover:bg-[#006e52] flex items-center transition-all whitespace-nowrap">
-      <ExternalLink size={14} className="mr-2" /> Open Theme Editor
-    </button>
+ <div className="flex items-center space-x-3 shrink-0">
+  <div className={`px-3 py-1.5 rounded-xl text-xs font-bold ${
+    appEmbedEnabled
+      ? "bg-green-100 text-green-700"
+      : "bg-yellow-100 text-yellow-700"
+  }`}>
+    {appEmbedEnabled ? "ACTIVE" : "DISABLED"}
   </div>
+
+  <button
+    onClick={() => {
+      const shop = app?.config?.shop;
+      if (!shop) return;
+
+      window.open(
+        `https://${shop}/admin/themes/current/editor?context=apps`,
+        "_blank"
+      );
+    }}
+    className="px-4 py-2 bg-[#008060] text-white rounded-xl text-xs font-bold shadow-sm hover:bg-[#006e52] flex items-center transition-all whitespace-nowrap"
+  >
+    <ExternalLink size={14} className="mr-2" />
+    Open Theme Editor
+  </button>
+</div>
 </div>
 
 

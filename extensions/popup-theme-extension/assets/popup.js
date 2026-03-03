@@ -65,8 +65,7 @@
     el.id = uniqueId;
 
     el.style.position = "fixed";
-    el.style.bottom = 20 + index * 140 + "px";
-    el.style.right = "20px";
+    applyPosition(el, config.position, index);
     el.style.background = config.bgColor || "#fff";
     el.style.color = config.textColor || "#000";
     el.style.padding = "20px";
@@ -112,6 +111,52 @@
       el.style.transform = "translateY(0)";
     });
   }
+
+  function applyPosition(el, position, index = 0) {
+
+  // reset first
+  el.style.top = "";
+  el.style.bottom = "";
+  el.style.left = "";
+  el.style.right = "";
+  el.style.transform = "";
+  el.style.width = "";
+  el.style.maxWidth = "";
+  el.style.borderRadius = "";
+
+  switch (position) {
+
+  case "modal":
+    el.style.top = "50%";
+    el.style.left = "50%";
+    el.style.transform = "translate(-50%, -50%)";
+    el.style.maxWidth = "420px";
+    break;
+
+  case "top-bar":
+    el.style.top = "0";
+    el.style.left = "0";
+    el.style.right = "0";
+    el.style.width = "100%";
+    el.style.borderRadius = "0";
+    el.style.maxWidth = "none";
+    break;
+
+  case "bottom-right":
+    el.style.bottom = `${20 + index * 140}px`;
+    el.style.right = "20px";
+    break;
+
+  case "bottom-left":
+    el.style.bottom = `${20 + index * 140}px`;
+    el.style.left = "20px";
+    break;
+
+  default:
+    el.style.bottom = "20px";
+    el.style.right = "20px";
+}
+}
 
   init();
 

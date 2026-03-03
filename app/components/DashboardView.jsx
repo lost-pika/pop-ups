@@ -137,6 +137,7 @@ export default function DashboardView(props) {
                     >
                       <Trash2 size={18} />
                     </button>
+                    
                   </div>
                 </div>
               ))}

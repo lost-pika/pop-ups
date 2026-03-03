@@ -4,16 +4,12 @@ import prisma from "../db.server";
 export async function action({ request }) {
   console.log("Publish clicked");
 
-  // 1️⃣ Authenticate first
   const { session } = await authenticate.admin(request);
 
   if (!session?.shop) {
     return Response.json({ error: "No shop session" }, { status: 401 });
   }
 
-  console.log("Session shop:", session.shop);
-
-  // 2️⃣ NOW parse body (IMPORTANT ORDER)
   const body = await request.json();
 
   const shop = await prisma.shop.upsert({
@@ -22,12 +18,7 @@ export async function action({ request }) {
     create: { shopDomain: session.shop },
   });
 
-  // deactivate previous active popup
-  await prisma.popup.updateMany({
-    where: { shopId: shop.id, isActive: true },
-    data: { isActive: false },
-  });
-
+  // 🚀 JUST CREATE ACTIVE POPUP
   const popup = await prisma.popup.create({
     data: {
       shopId: shop.id,

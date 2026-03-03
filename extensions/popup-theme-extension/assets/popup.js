@@ -21,143 +21,250 @@
   }
 
   // ===== MAIN INIT =====
-  async function init() {
-    await domReady();
+ async function init() {
+  await domReady();
 
-    const instances = window.EXPLI_POPUPS || [];
-    if (!instances.length) return;
+  const shop = window.EXPLI_SHOP;
+  const appUrl = window.EXPLI_APP_URL;
 
-    for (const [index, instance] of instances.entries()) {
-  initPopup(instance, index);
-}
-  }
-
-  // ===== FETCH POPUP =====
- async function initPopup({ shop, appUrl, popupId }, index){
-  if (!popupId) return;
+  if (!shop || !appUrl) return;
 
   try {
     const res = await fetch(
-      `${appUrl}/api/popups/by-id?shop=${shop}&id=${popupId}`
+      `${appUrl}/api/popups/active?shop=${shop}`
     );
 
     if (!res.ok) return;
 
-    const popup = await res.json();
+    const popups = await res.json();
 
-    // 🔥 IMPORTANT LINE
-    if (!popup || !popup.config) return;
+    if (!popups || !popups.length) return;
 
-   renderPopup(popup.config, index);
+    const grouped = {};
+
+popups.forEach((popup) => {
+  if (!popup.config) return;
+
+  const position = popup.config.position || "bottom-right";
+
+  if (!grouped[position]) {
+    grouped[position] = [];
+  }
+
+  grouped[position].push(popup.config);
+});
+
+// Now render grouped
+Object.keys(grouped).forEach((position) => {
+  grouped[position].forEach((config, index) => {
+    renderPopup(config, index);
+  });
+});
 
   } catch (err) {
     console.error("Expli popup error:", err);
   }
 }
 
+
+
   // ===== RENDER =====
-  function renderPopup(config, index){
+function renderPopup(config, index = 0) {
+  const el = document.createElement("div");
 
-    const uniqueId = "expli-popup-" + index;
-    if (document.getElementById(uniqueId)) return;
+  // =============================
+  // Base Styles
+  // =============================
+  el.style.position = "fixed";
+  el.style.background = config.bgColor || "#fff";
+  el.style.color = config.textColor || "#000";
+  el.style.fontFamily = config.fontFamily || "sans-serif";
+  el.style.zIndex = "9999";
+  el.style.transition = "all 0.3s ease";
+  el.style.opacity = "0";
 
-    const el = document.createElement("div");
-    el.id = uniqueId;
+  // Border radius
+  el.style.borderRadius =
+    config.position === "top-bar"
+      ? "0px"
+      : (config.borderRadius || 16) + "px";
 
-    el.style.position = "fixed";
-    applyPosition(el, config.position, index);
-    el.style.background = config.bgColor || "#fff";
-    el.style.color = config.textColor || "#000";
-    el.style.padding = "20px";
-    el.style.borderRadius = (config.borderRadius || 12) + "px";
-    el.style.boxShadow = "0 10px 30px rgba(0,0,0,0.2)";
-    el.style.zIndex = "99999";
-    el.style.maxWidth = "320px";
-    el.style.fontFamily =
-      config.fontFamily === "serif" ? "serif" : "sans-serif";
+  // Shadow
+  const shadow = config.shadowIntensity || 15;
+  el.style.boxShadow = `0 15px 40px rgba(0,0,0,${shadow / 100})`;
 
-    // animation start
-    el.style.opacity = "0";
-    el.style.transform = "translateY(20px)";
-    el.style.transition = "all 0.3s ease";
+  applyPosition(el, config.position, index);
 
-    el.innerHTML = `
-      <h3 style="margin:0 0 10px;font-size:20px;font-weight:700;">
-        ${config.heading || ""}
-      </h3>
+  // =============================
+  // TOP BAR LAYOUT
+  // =============================
+  if (config.position === "top-bar") {
+    el.style.padding = "14px 24px";
+    el.style.display = "flex";
+    el.style.alignItems = "center";
+    el.style.justifyContent = "center";
+    el.style.gap = "20px";
 
-      <p style="margin:0 0 16px;font-size:14px;opacity:.8;">
-        ${config.subheading || ""}
-      </p>
+    const heading = document.createElement("div");
+    heading.innerText = config.heading || "";
+    heading.style.fontWeight = "600";
+    heading.style.fontSize = "16px";
 
-      <button style="
-        background:${config.btnColor || "#008060"};
-        color:white;
-        border:none;
-        padding:10px 14px;
-        border-radius:8px;
-        cursor:pointer;
-        width:100%;
-        font-weight:600;
-      ">
-        ${config.buttonText || "Click"}
-      </button>
-    `;
+    el.appendChild(heading);
 
-    document.body.appendChild(el);
+    if (config.buttonText) {
+      const btn = document.createElement("a");
+      btn.innerText = config.buttonText;
+      btn.href = "#";
+      btn.style.padding = "8px 18px";
+      btn.style.background = config.btnColor || "#000";
+      btn.style.color = "#fff";
+      btn.style.borderRadius = "6px";
+      btn.style.textDecoration = "none";
+      btn.style.fontSize = "14px";
 
-    requestAnimationFrame(() => {
-      el.style.opacity = "1";
-      el.style.transform = "translateY(0)";
-    });
+      el.appendChild(btn);
+    }
+
+  } else {
+
+    // =============================
+    // CARD / MODAL LAYOUT
+    // =============================
+    el.style.padding = "26px";
+    el.style.width = "320px";   // wider than before
+
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "flex";
+    wrapper.style.flexDirection = "column";
+    wrapper.style.alignItems = "center";
+    wrapper.style.textAlign = "center";
+    wrapper.style.gap = "12px";
+
+    const heading = document.createElement("div");
+    heading.innerText = config.heading || "";
+    heading.style.fontWeight = "600";
+    heading.style.fontSize = "20px";
+
+    wrapper.appendChild(heading);
+
+    if (config.subheading) {
+      const sub = document.createElement("div");
+      sub.innerText = config.subheading;
+      sub.style.fontSize = "14px";
+      sub.style.opacity = "0.9";
+      wrapper.appendChild(sub);
+    }
+
+    if (config.buttonText) {
+      const btn = document.createElement("a");
+      btn.innerText = config.buttonText;
+      btn.href = "#";
+      btn.style.padding = "10px 22px";
+      btn.style.background = config.btnColor || "#000";
+      btn.style.color = "#fff";
+      btn.style.borderRadius = "8px";
+      btn.style.textDecoration = "none";
+      btn.style.fontSize = "14px";
+
+      wrapper.appendChild(btn);
+    }
+
+    el.appendChild(wrapper);
   }
 
-  function applyPosition(el, position, index = 0) {
+  // =============================
+  // CLOSE BUTTON
+  // =============================
+  const closeBtn = document.createElement("button");
+  closeBtn.innerHTML = "×";
+  closeBtn.style.position = "absolute";
+  closeBtn.style.top = "10px";
+  closeBtn.style.right = "14px";
+  closeBtn.style.background = "transparent";
+  closeBtn.style.border = "none";
+  closeBtn.style.fontSize = "18px";
+  closeBtn.style.cursor = "pointer";
+  closeBtn.style.color = config.textColor || "#000";
 
-  // reset first
+  el.appendChild(closeBtn);
+
+  // =============================
+  // MODAL OVERLAY
+  // =============================
+let overlay = null;
+
+if (config.position === "modal" && !document.querySelector(".expli-overlay")) {
+  overlay = document.createElement("div");
+  overlay.className = "expli-overlay";
+  overlay.style.position = "fixed";
+  overlay.style.inset = "0";
+  overlay.style.background = `rgba(0,0,0,${
+    (config.overlayOpacity || 40) / 100
+  })`;
+  overlay.style.zIndex = "9998";
+
+  document.body.appendChild(overlay);
+}
+  function removePopup() {
+    el.style.opacity = "0";
+    setTimeout(() => {
+      el.remove();
+      if (overlay) overlay.remove();
+    }, 300);
+  }
+
+  closeBtn.addEventListener("click", removePopup);
+
+  document.body.appendChild(el);
+
+  requestAnimationFrame(() => {
+    el.style.opacity = "1";
+  });
+}
+
+function applyPosition(el, position, index = 0) {
   el.style.top = "";
   el.style.bottom = "";
   el.style.left = "";
   el.style.right = "";
-  el.style.transform = "";
   el.style.width = "";
-  el.style.maxWidth = "";
-  el.style.borderRadius = "";
+  el.style.transform = "";
+
+  const gap = 20;
+  const stackOffset = 180;
 
   switch (position) {
 
-  case "modal":
-    el.style.top = "50%";
-    el.style.left = "50%";
-    el.style.transform = "translate(-50%, -50%)";
-    el.style.maxWidth = "420px";
-    break;
+    case "modal":
+      el.style.top = "50%";
+      el.style.left = "50%";
+      el.style.width = "380px";
+      el.style.transform = `translate(-50%, calc(-50% + ${index * stackOffset}px))`;
+      break;
 
-  case "top-bar":
-    el.style.top = "0";
-    el.style.left = "0";
-    el.style.right = "0";
-    el.style.width = "100%";
-    el.style.borderRadius = "0";
-    el.style.maxWidth = "none";
-    break;
+    case "top-bar":
+      el.style.top = `${index * 60}px`;
+      el.style.left = "0";
+      el.style.right = "0";
+      el.style.width = "100%";
+      break;
 
-  case "bottom-right":
-    el.style.bottom = `${20 + index * 140}px`;
-    el.style.right = "20px";
-    break;
+    case "bottom-right":
+      el.style.bottom = `${30 + index * (stackOffset)}px`;
+      el.style.right = "30px";
+      break;
 
-  case "bottom-left":
-    el.style.bottom = `${20 + index * 140}px`;
-    el.style.left = "20px";
-    break;
+    case "bottom-left":
+      el.style.bottom = `${30 + index * (stackOffset)}px`;
+      el.style.left = "30px";
+      break;
 
-  default:
-    el.style.bottom = "20px";
-    el.style.right = "20px";
+    default:
+      el.style.bottom = `${30 + index * (stackOffset)}px`;
+      el.style.right = "30px";
+  }
 }
-}
-
   init();
 
 })();

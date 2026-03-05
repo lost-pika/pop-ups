@@ -14,7 +14,14 @@ export default function EditorView({
 
   if (!config) return null;
 
-  const update = (field, value) => setConfig({ ...config, [field]: value });
+  const update = (field, value) =>
+  setConfig({
+    buttonAction: "redirect",
+    buttonUrl: "",
+    discountCode: "",
+    ...config,
+    [field]: value,
+  });
 
   return (
     <div className="flex flex-col h-full w-full bg-[#f6f6f7] overflow-hidden rounded-xl border border-[#e1e3e5]">
@@ -163,27 +170,64 @@ export default function EditorView({
                 </FieldGroup>
 
                 <FieldGroup label="Call to Action">
-                  <Field label="Button Text">
-                    <input
-                      className="w-full border border-gray-200 rounded-xl p-4 text-sm outline-none shadow-sm"
-                      value={config.buttonText}
-                      onChange={(e) => update("buttonText", e.target.value)}
-                    />
-                  </Field>
-                  <Field label="Button Color">
-                    <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                      <input
-                        type="color"
-                        className="w-12 h-12 border-none cursor-pointer bg-transparent"
-                        value={config.btnColor}
-                        onChange={(e) => update("btnColor", e.target.value)}
-                      />
-                      <span className="text-[10px] font-bold text-gray-400 px-3 uppercase tracking-widest">
-                        {config.btnColor}
-                      </span>
-                    </div>
-                  </Field>
-                </FieldGroup>
+  <Field label="Button Text">
+    <input
+      className="w-full border border-gray-200 rounded-xl p-4 text-sm outline-none shadow-sm"
+      value={config.buttonText}
+      onChange={(e) => update("buttonText", e.target.value)}
+    />
+  </Field>
+
+  <Field label="Button Color">
+    <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+      <input
+        type="color"
+        className="w-12 h-12 border-none cursor-pointer bg-transparent"
+        value={config.btnColor}
+        onChange={(e) => update("btnColor", e.target.value)}
+      />
+      <span className="text-[10px] font-bold text-gray-400 px-3 uppercase tracking-widest">
+        {config.btnColor}
+      </span>
+    </div>
+  </Field>
+
+  {/* ACTION TYPE */}
+  <Field label="Button Action">
+    <select
+      className="w-full border border-gray-200 rounded-xl p-4 text-sm bg-white outline-none shadow-sm"
+      value={config.buttonAction ?? "redirect"}
+      onChange={(e) => update("buttonAction", e.target.value)}
+    >
+      <option value="redirect">Redirect to URL</option>
+      <option value="copy_code">Copy Discount Code</option>
+    </select>
+  </Field>
+
+  {/* REDIRECT URL */}
+  {config.buttonAction === "redirect" && (
+    <Field label="Redirect URL">
+      <input
+        className="w-full border border-gray-200 rounded-xl p-4 text-sm outline-none shadow-sm"
+        placeholder="/collections/sale"
+        value={config.buttonUrl || ""}
+        onChange={(e) => update("buttonUrl", e.target.value)}
+      />
+    </Field>
+  )}
+
+  {/* DISCOUNT CODE */}
+  {config.buttonAction === "copy_code" && (
+    <Field label="Discount Code">
+      <input
+        className="w-full border border-gray-200 rounded-xl p-4 text-sm outline-none shadow-sm"
+        placeholder="GET50OFF"
+        value={config.discountCode || ""}
+        onChange={(e) => update("discountCode", e.target.value)}
+      />
+    </Field>
+  )}
+</FieldGroup>
               </div>
             ) : (
               <div className="space-y-8">

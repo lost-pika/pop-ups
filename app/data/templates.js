@@ -6,6 +6,11 @@ export const PREDEFINED_TEMPLATES = [
     heading: "Unlock Premium Access",
     subheading: "GET50OFF",
     buttonText: "Claim Discount",
+
+    buttonAction: "copy_code",
+    discountCode: "GET50OFF",
+    buttonUrl: "",
+
     bgColor: "#4c1d95",
     textColor: "#ffffff",
     btnColor: "#a855f7",
@@ -15,6 +20,7 @@ export const PREDEFINED_TEMPLATES = [
     shadowIntensity: 25,
     fontFamily: "sans",
   },
+
   {
     id: "t2",
     name: "Perplexity Electric",
@@ -22,6 +28,11 @@ export const PREDEFINED_TEMPLATES = [
     heading: "Join the Future",
     subheading: "SMARTERAI",
     buttonText: "Get Started",
+
+    buttonAction: "copy_code",
+    discountCode: "SMARTERAI",
+    buttonUrl: "",
+
     bgColor: "#1e40af",
     textColor: "#ffffff",
     btnColor: "#3b82f6",
@@ -31,6 +42,7 @@ export const PREDEFINED_TEMPLATES = [
     shadowIntensity: 15,
     fontFamily: "sans",
   },
+
   {
     id: "t3",
     name: "Veltrix Dark",
@@ -38,6 +50,11 @@ export const PREDEFINED_TEMPLATES = [
     heading: "Limited Anniversary Sale",
     subheading: "VELTRIX2024",
     buttonText: "Shop Now",
+
+    buttonAction: "redirect",
+    buttonUrl: "/collections/all",
+    discountCode: "",
+
     bgColor: "#0f172a",
     textColor: "#ffffff",
     btnColor: "#334155",
@@ -47,6 +64,7 @@ export const PREDEFINED_TEMPLATES = [
     shadowIntensity: 30,
     fontFamily: "serif",
   },
+
   {
     id: "t4",
     name: "Emerald Growth",
@@ -54,6 +72,11 @@ export const PREDEFINED_TEMPLATES = [
     heading: "Free Shipping Today",
     subheading: "SHIPFREE",
     buttonText: "Activate Now",
+
+    buttonAction: "copy_code",
+    discountCode: "SHIPFREE",
+    buttonUrl: "",
+
     bgColor: "#064e3b",
     textColor: "#ffffff",
     btnColor: "#10b981",
@@ -63,6 +86,7 @@ export const PREDEFINED_TEMPLATES = [
     shadowIntensity: 10,
     fontFamily: "sans",
   },
+
   {
     id: "t5",
     name: "Sunset Urgency",
@@ -70,6 +94,11 @@ export const PREDEFINED_TEMPLATES = [
     heading: "Flash Sale Ending Soon",
     subheading: "HURRY25",
     buttonText: "Grab the Deal",
+
+    buttonAction: "copy_code",
+    discountCode: "HURRY25",
+    buttonUrl: "",
+
     bgColor: "#7c2d12",
     textColor: "#ffffff",
     btnColor: "#ea580c",
@@ -79,6 +108,7 @@ export const PREDEFINED_TEMPLATES = [
     shadowIntensity: 20,
     fontFamily: "sans",
   },
+
   {
     id: "t6",
     name: "Minimalist Bar",
@@ -86,6 +116,11 @@ export const PREDEFINED_TEMPLATES = [
     heading: "New Collection Live!",
     subheading: "",
     buttonText: "View All",
+
+    buttonAction: "redirect",
+    buttonUrl: "/collections/all",
+    discountCode: "",
+
     bgColor: "#000000",
     textColor: "#ffffff",
     btnColor: "#ffffff",
@@ -95,6 +130,7 @@ export const PREDEFINED_TEMPLATES = [
     shadowIntensity: 5,
     fontFamily: "sans",
   },
+
   {
     id: "t7",
     name: "Cyber Neon",
@@ -102,6 +138,11 @@ export const PREDEFINED_TEMPLATES = [
     heading: "Early Access Invited",
     subheading: "CYBER77",
     buttonText: "Enter Now",
+
+    buttonAction: "copy_code",
+    discountCode: "CYBER77",
+    buttonUrl: "",
+
     bgColor: "#111827",
     textColor: "#ffffff",
     btnColor: "#ec4899",
@@ -111,6 +152,7 @@ export const PREDEFINED_TEMPLATES = [
     shadowIntensity: 40,
     fontFamily: "sans",
   },
+
   {
     id: "t8",
     name: "Oceanic Announcement",
@@ -118,6 +160,11 @@ export const PREDEFINED_TEMPLATES = [
     heading: "Standard Delivery is now FREE",
     subheading: "",
     buttonText: "Details",
+
+    buttonAction: "redirect",
+    buttonUrl: "/pages/shipping",
+    discountCode: "",
+
     bgColor: "#1e3a8a",
     textColor: "#ffffff",
     btnColor: "#60a5fa",

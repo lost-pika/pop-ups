@@ -18,24 +18,25 @@ export default function DashboardView(props) {
 
   return (
     <div className="max-w-full mx-auto space-y-6 animate-in fade-in duration-500 px-4 md:px-8">
-      {/* Integration Banner */}
-     <div className={`p-4 rounded-2xl border transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4 ${appEmbedEnabled ? "bg-white border-[#e1e3e5]" : "bg-[#fff4e5] border-[#ffb800]"}`}>
+      
+     {/* Info Banner */}
+{/* Info Banner */}
+<div className="p-4 rounded-2xl border border-[#e1e3e5] bg-white flex flex-col md:flex-row md:items-center justify-between gap-4">
+  
   <div className="flex items-start space-x-4">
-    <div className={`p-2 rounded-xl ${appEmbedEnabled ? "bg-green-50 text-[#008060]" : "bg-[#ffb800] text-white"}`}>
+    <div className="p-2 rounded-xl bg-green-50 text-[#008060]">
       <Zap size={20} />
     </div>
+
     <div>
-      <h3 className="font-bold text-gray-900 text-sm md:text-base">{appEmbedEnabled ? "App is active" : "App is disabled"}</h3>
-      <p className="text-xs md:text-sm text-gray-500">Your pop-ups are currently visible based on your rules.</p>
+      <h3 className="font-bold text-gray-900 text-sm md:text-base">
+        Pop-Up Notifications Ready
+      </h3>
+
+      <p className="text-xs md:text-sm text-gray-500">
+        Create and manage pop-ups for your storefront. Configure them in the editor and they will appear automatically on your store.
+      </p>
     </div>
-  </div>
- <div className="flex items-center space-x-3 shrink-0">
-  <div className={`px-3 py-1.5 rounded-xl text-xs font-bold ${
-    appEmbedEnabled
-      ? "bg-green-100 text-green-700"
-      : "bg-yellow-100 text-yellow-700"
-  }`}>
-    {appEmbedEnabled ? "ACTIVE" : "DISABLED"}
   </div>
 
   <button
@@ -53,7 +54,7 @@ export default function DashboardView(props) {
     <ExternalLink size={14} className="mr-2" />
     Open Theme Editor
   </button>
-</div>
+
 </div>
 
 

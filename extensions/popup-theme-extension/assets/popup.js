@@ -66,7 +66,31 @@ Object.keys(grouped).forEach((position) => {
   }
 }
 
+function handleAction(config) {
 
+  const action = config.buttonAction || "redirect";
+
+  if (action === "redirect") {
+
+    if (config.buttonUrl) {
+      window.location.href = config.buttonUrl;
+    }
+
+  }
+
+  if (action === "copy_code") {
+
+    if (config.discountCode) {
+
+      navigator.clipboard.writeText(config.discountCode);
+
+      alert("Discount code copied!");
+
+    }
+
+  }
+
+}
 
   // ===== RENDER =====
 function renderPopup(config, index = 0) {
@@ -112,19 +136,24 @@ function renderPopup(config, index = 0) {
 
     el.appendChild(heading);
 
-    if (config.buttonText) {
-      const btn = document.createElement("a");
-      btn.innerText = config.buttonText;
-      btn.href = "#";
-      btn.style.padding = "8px 18px";
-      btn.style.background = config.btnColor || "#000";
-      btn.style.color = "#fff";
-      btn.style.borderRadius = "6px";
-      btn.style.textDecoration = "none";
-      btn.style.fontSize = "14px";
+   if (config.buttonText) {
+  const btn = document.createElement("button");
+  btn.innerText = config.buttonText;
 
-      el.appendChild(btn);
-    }
+  btn.style.padding = "8px 18px";
+  btn.style.background = config.btnColor || "#000";
+  btn.style.color = "#fff";
+  btn.style.borderRadius = "6px";
+  btn.style.border = "none";
+  btn.style.cursor = "pointer";
+  btn.style.fontSize = "14px";
+
+  btn.addEventListener("click", () => {
+    handleAction(config);
+  });
+
+  el.appendChild(btn);
+}
 
   } else {
 
@@ -157,18 +186,23 @@ function renderPopup(config, index = 0) {
     }
 
     if (config.buttonText) {
-      const btn = document.createElement("a");
-      btn.innerText = config.buttonText;
-      btn.href = "#";
-      btn.style.padding = "10px 22px";
-      btn.style.background = config.btnColor || "#000";
-      btn.style.color = "#fff";
-      btn.style.borderRadius = "8px";
-      btn.style.textDecoration = "none";
-      btn.style.fontSize = "14px";
+  const btn = document.createElement("button");
+  btn.innerText = config.buttonText;
 
-      wrapper.appendChild(btn);
-    }
+  btn.style.padding = "10px 22px";
+  btn.style.background = config.btnColor || "#000";
+  btn.style.color = "#fff";
+  btn.style.borderRadius = "8px";
+  btn.style.border = "none";
+  btn.style.cursor = "pointer";
+  btn.style.fontSize = "14px";
+
+  btn.addEventListener("click", () => {
+    handleAction(config);
+  });
+
+  wrapper.appendChild(btn);
+}
 
     el.appendChild(wrapper);
   }

@@ -22,32 +22,30 @@ export default function AppLayout() {
   const [appEmbedEnabled] = useState(isEmbedEnabled);
 
   const handleUseTemplate = (template) => {
-    setCurrentPopupConfig({
-      ...template,
-      id: `popup_${Date.now()}`,
-      internalName: `Draft ${template.name}`,
-      status: "active",
-      overlayOpacity: 40,
-    });
-  };
+  setCurrentPopupConfig({
+    ...template,
+    internalName: `Draft ${template.name}`,
+    status: "active",
+    overlayOpacity: 40,
+  });
+};
 
-  const handleManualCreate = () => {
-    setCurrentPopupConfig({
-      id: `popup_${Date.now()}`,
-      internalName: "Manual Pop-up",
-      heading: "New Offer",
-      subheading: "GET20OFF",
-      buttonText: "Claim Now",
-      bgColor: "#ffffff",
-      textColor: "#000000",
-      btnColor: "#008060",
-      position: "modal",
-      borderRadius: 16,
-      shadowIntensity: 20,
-      overlayOpacity: 40,
-      fontFamily: "sans",
-    });
-  };
+const handleManualCreate = () => {
+  setCurrentPopupConfig({
+    internalName: "Manual Pop-up",
+    heading: "New Offer",
+    subheading: "GET20OFF",
+    buttonText: "Claim Now",
+    bgColor: "#ffffff",
+    textColor: "#000000",
+    btnColor: "#008060",
+    position: "modal",
+    borderRadius: 16,
+    shadowIntensity: 20,
+    overlayOpacity: 40,
+    fontFamily: "sans",
+  });
+};
 
   const handleSavePopup = async () => {
     if (!currentPopupConfig) return;

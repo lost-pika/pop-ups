@@ -28,12 +28,13 @@ export async function loader({ request }) {
     return Response.json(null, { headers: corsHeaders });
   }
 
-  const popup = await prisma.popup.findFirst({
-    where: {
-      id,
-      shopId: shop.id,
-    },
-  });
+ const popup = await prisma.popup.findFirst({
+  where: {
+    id,
+    shopId: shop.id,
+    isActive: true,
+  },
+});
 
   return Response.json(popup, {
     headers: corsHeaders,

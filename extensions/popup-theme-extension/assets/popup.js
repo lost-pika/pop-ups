@@ -1,4 +1,4 @@
-
+console.log("Expli popup script loaded");
 
 (function () {
   // ===== Skip inside Theme Editor =====
@@ -21,8 +21,25 @@
     });
   }
 
+  function waitForPopups() {
+  return new Promise((resolve) => {
+    const check = () => {
+      if (window.EXPLI_POPUPS && window.EXPLI_POPUPS.length) {
+        resolve();
+      } else {
+        setTimeout(check, 50);
+      }
+    };
+    check();
+  });
+}
+
   // ===== MAIN INIT =====
  async function init() {
+  console.log("INIT RUNNING");
+console.log("POPUPS:", window.EXPLI_POPUPS);
+console.log("SHOP:", window.EXPLI_SHOP);
+console.log("APP URL:", window.EXPLI_APP_URL);
   await domReady();
 
   const shop = window.EXPLI_SHOP;
@@ -32,9 +49,9 @@
 
   try {
 
-  if (!window.EXPLI_POPUPS || !window.EXPLI_POPUPS.length) return;
+  await waitForPopups();
 
-  for (const popupRef of window.EXPLI_POPUPS) {
+for (const [index, popupRef] of window.EXPLI_POPUPS.entries()) {
 
     const res = await fetch(
       `${popupRef.appUrl}/api/popups/by-id?shop=${popupRef.shop}&id=${popupRef.popupId}`
@@ -46,7 +63,7 @@
 
     if (!popup || !popup.config) continue;
 
-    renderPopup(popup.config);
+    renderPopup(popup.config, index);
 
   }
 

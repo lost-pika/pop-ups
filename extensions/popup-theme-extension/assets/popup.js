@@ -1,7 +1,9 @@
-if (window.__EXPLI_POPUP_ENGINE__) return;
-window.__EXPLI_POPUP_ENGINE__ = true;
+
 
 (function () {
+
+  if (window.__EXPLI_POPUP_ENGINE__) return;
+window.__EXPLI_POPUP_ENGINE__ = true;
 
   // ===== Skip inside Theme Editor =====
   const isThemeEditor =

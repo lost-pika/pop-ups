@@ -72,8 +72,7 @@ export default function DashboardView(props) {
             </div>
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-4 max-w-xl leading-tight">
-            Increase sales with Expli Pop-Up Notifications and auto apply
-            Discounts
+            Increase sales with PopLift Explified
           </h2>
           <button
             onClick={onCreateNew}

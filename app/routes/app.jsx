@@ -70,9 +70,19 @@ export default function AppLayout() {
     setCurrentPopupConfig(null);
   };
 
-  const handleDeletePopup = (id) => {
-    setMyPopups((prev) => prev.filter((p) => p.id !== id));
-  };
+  const handleDeletePopup = async (id) => {
+
+  await fetch("/api/popups/delete", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ id })
+  });
+
+  setMyPopups((prev) => prev.filter((p) => p.id !== id));
+};
 
   const loadPopups = async () => {
     try {

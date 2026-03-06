@@ -1,3 +1,6 @@
+if (window.__EXPLI_POPUP_ENGINE__) return;
+window.__EXPLI_POPUP_ENGINE__ = true;
+
 (function () {
 
   // ===== Skip inside Theme Editor =====
@@ -30,40 +33,28 @@
   if (!shop || !appUrl) return;
 
   try {
+
+  if (!window.EXPLI_POPUPS || !window.EXPLI_POPUPS.length) return;
+
+  for (const popupRef of window.EXPLI_POPUPS) {
+
     const res = await fetch(
-      `${appUrl}/api/popups/active?shop=${shop}`
+      `${popupRef.appUrl}/api/popups/by-id?shop=${popupRef.shop}&id=${popupRef.popupId}`
     );
 
-    if (!res.ok) return;
+    if (!res.ok) continue;
 
-    const popups = await res.json();
+    const popup = await res.json();
 
-    if (!popups || !popups.length) return;
+    if (!popup || !popup.config) continue;
 
-    const grouped = {};
+    renderPopup(popup.config);
 
-popups.forEach((popup) => {
-  if (!popup.config) return;
-
-  const position = popup.config.position || "bottom-right";
-
-  if (!grouped[position]) {
-    grouped[position] = [];
   }
 
-  grouped[position].push(popup.config);
-});
-
-// Now render grouped
-Object.keys(grouped).forEach((position) => {
-  grouped[position].forEach((config, index) => {
-    renderPopup(config, index);
-  });
-});
-
-  } catch (err) {
-    console.error("Expli popup error:", err);
-  }
+} catch (err) {
+  console.error("Expli popup error:", err);
+}
 }
 
 function handleAction(config) {

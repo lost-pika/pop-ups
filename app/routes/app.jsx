@@ -77,9 +77,9 @@ export default function AppLayout() {
   const loadPopups = async () => {
     try {
       const res = await fetch(
-        "/api/popups/list?shop=currency-switcher-app-2.myshopify.com",
-        { credentials: "include" }
-      );
+  "/api/popups/list",
+  { credentials: "include" }
+);
 
       if (!res.ok) return;
 

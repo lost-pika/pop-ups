@@ -7,8 +7,6 @@ const corsHeaders = {
 };
 
 export async function loader({ request }) {
-
-  // CORS preflight
   if (request.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }

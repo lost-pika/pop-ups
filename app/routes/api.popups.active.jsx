@@ -1,49 +1,32 @@
+import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
+export async function action({ request }) {
+  console.log("Publish clicked");
 
-export async function loader({ request }) {
-  // --- CORS preflight ---
-  if (request.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+  const { session } = await authenticate.admin(request);
+
+  if (!session?.shop) {
+    return Response.json({ error: "No shop session" }, { status: 401 });
   }
 
-  const url = new URL(request.url);
-  const shop = url.searchParams.get("shop");
+  const body = await request.json();
 
-  if (!shop) {
-    return Response.json(null, { headers: corsHeaders });
-  }
+  const shop = await prisma.shop.upsert({
+    where: { shopDomain: session.shop },
+    update: {},
+    create: { shopDomain: session.shop },
+  });
 
- const dbShop = await prisma.shop.findUnique({
-  where: {
-    shopDomain: shop,
-  },
-});
+  // 🚀 JUST CREATE ACTIVE POPUP
+  const popup = await prisma.popup.create({
+    data: {
+      shopId: shop.id,
+      name: body.internalName,
+      isActive: true,
+      config: body,
+    },
+  });
 
-  if (!dbShop) {
-    return Response.json(null, { headers: corsHeaders });
-  }
-
-const popups = await prisma.popup.findMany({
-  where: {
-    shopId: dbShop.id,
-    isActive: true,
-  },
-  select: {
-    id: true,
-    config: true,
-  },
-  orderBy: {
-    createdAt: "desc",
-  },
-});
-
-return Response.json(popups, {
-  headers: corsHeaders,
-});
+  return Response.json({ success: true, popup });
 }

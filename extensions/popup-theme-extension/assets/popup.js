@@ -49,23 +49,17 @@ console.log("APP URL:", window.EXPLI_APP_URL);
 
   try {
 
-  await waitForPopups();
+ const res = await fetch(
+  `${appUrl}/api/popups/active?shop=${shop}`
+);
 
-for (const [index, popupRef] of window.EXPLI_POPUPS.entries()) {
+if (!res.ok) return;
 
-    const res = await fetch(
-      `${popupRef.appUrl}/api/popups/by-id?shop=${popupRef.shop}&id=${popupRef.popupId}`
-    );
+const popups = await res.json();
 
-    if (!res.ok) continue;
-
-    const popup = await res.json();
-
-    if (!popup || !popup.config) continue;
-
-    renderPopup(popup.config, index);
-
-  }
+for (const [index, popup] of popups.entries()) {
+  renderPopup(popup.config, index);
+}
 
 } catch (err) {
   console.error("Expli popup error:", err);

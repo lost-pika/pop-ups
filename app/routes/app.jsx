@@ -116,7 +116,7 @@ export default function AppLayout() {
         <s-link href="/app">Dashboard</s-link>
         <s-link href="/app/templates">Templates</s-link>
         <s-link href="/app/editor">Editor</s-link>
-        <s-link href="/app/settings">Settings</s-link>
+        {/* <s-link href="/app/settings">Settings</s-link> */}
       </s-app-nav>
 
       <AppContext.Provider

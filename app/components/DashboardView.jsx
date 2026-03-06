@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus, LayoutTemplate, Eye, Zap, Edit, Trash2, ToggleLeft, ToggleRight, Sparkles, ArrowRight, ExternalLink } from "lucide-react";
+import { Plus, LayoutTemplate, Eye, Zap, Edit, Trash2, Sparkles, ArrowRight, ExternalLink } from "lucide-react";
 import { AnalyticsCard } from "./ui";
 import { useAppBridge } from "@shopify/app-bridge-react";
 
@@ -59,7 +59,7 @@ export default function DashboardView(props) {
 
 
 
-      {isNewUser ? (
+      {myPopups.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 bg-white border border-[#e1e3e5] rounded-3xl shadow-sm text-center px-6">
           {/* Functional Plus Hero Button */}
           <div
@@ -91,21 +91,21 @@ export default function DashboardView(props) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <AnalyticsCard
               title="Active Campaigns"
-              value={myPopups.filter((p) => p.status === "active").length}
+              value={myPopups.filter((p) => p.isActive).length}
               icon={<LayoutTemplate size={18} />}
             />
+           <AnalyticsCard
+  title="Total Pop-ups"
+  value={myPopups.length}
+  icon={<Eye size={18} />}
+  color="blue"
+/>
             <AnalyticsCard
-              title="Impressions"
-              value={myPopups.reduce((a, b) => a + b.views, 0).toLocaleString()}
-              icon={<Eye size={18} />}
-              color="blue"
-            />
-            <AnalyticsCard
-              title="Performance"
-              value="+12.4%"
-              icon={<Zap size={18} />}
-              color="purple"
-            />
+  title="Inactive Pop-ups"
+  value={myPopups.filter((p) => !p.isActive).length}
+  icon={<Zap size={18} />}
+  color="purple"
+/>
           </div>
           <div className="bg-white border border-[#e1e3e5] rounded-2xl shadow-sm overflow-hidden">
             <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/30">
@@ -137,7 +137,7 @@ export default function DashboardView(props) {
   Popup ID: {popup.id}
 </p>
                       <p className="text-[10px] text-gray-400 font-bold uppercase mt-0.5">
-                        {popup.config?.type || "POPUP"} • {popup.config?.position || "modal"}
+                        {popup.config?.position?.replace("-", " ") || "modal"}
                       </p>
                     </div>
                   </div>

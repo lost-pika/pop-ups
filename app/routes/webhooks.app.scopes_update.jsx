@@ -1,3 +1,6 @@
+// app/routes/webhooks.app.scopes_update.jsx
+export const runtime = "nodejs";
+
 import { authenticate } from "../shopify.server";
 import prisma from "../db.server";
 

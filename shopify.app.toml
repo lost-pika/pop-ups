@@ -15,6 +15,7 @@ redirect_urls = ["https://pop-ups-two.vercel.app/api/auth"]
 [webhooks]
 api_version = "2026-01"
 
+# Keep your normal webhooks as "topics"
 [[webhooks.subscriptions]]
 topics = ["app/uninstalled"]
 uri = "/webhooks/app/uninstalled"
@@ -22,3 +23,16 @@ uri = "/webhooks/app/uninstalled"
 [[webhooks.subscriptions]]
 topics = ["app/scopes_update"]
 uri = "/webhooks/app/scopes_update"
+
+# Use "compliance_topics" for the GDPR ones
+[[webhooks.subscriptions]]
+compliance_topics = ["customers/data_request"]
+uri = "/webhooks/customers/data_request"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["customers/redact"]
+uri = "/webhooks/customers/redact"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["shop/redact"]
+uri = "/webhooks/shop/redact"

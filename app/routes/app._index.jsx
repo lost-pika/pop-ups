@@ -25,10 +25,14 @@ export default function Index() {
       onCreateNew={() => navigate("/app/templates")}
       onDeletePopup={handleDeletePopup}
       onEditPopup={(popup) => {
-        // Load the existing config into the context before navigating
-        setCurrentPopupConfig(popup.config);
-        navigate("/app/editor");
-      }}
+  setCurrentPopupConfig({
+    ...popup.config,
+    id: popup.id,
+    internalName: popup.name
+  });
+
+  navigate("/app/editor");
+}}
       onOpenThemeEditor={() => console.log("Theme Editor Simulation")}
     />
   );

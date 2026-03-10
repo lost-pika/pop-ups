@@ -47,26 +47,29 @@ const handleManualCreate = () => {
   });
 };
 
-  const handleSavePopup = async () => {
-    if (!currentPopupConfig) return;
+const handleSavePopup = async () => {
+  if (!currentPopupConfig) return;
 
-    const res = await fetch("/api/popups/save", {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(currentPopupConfig),
-    });
+  const res = await fetch("/api/popups/save", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...currentPopupConfig,
+      id: currentPopupConfig.id || null,
+    }),
+  });
 
-    if (!res.ok) {
-      console.error("Save failed");
-      return;
-    }
+  if (!res.ok) {
+    console.error("Save failed");
+    return;
+  }
 
-    await loadPopups();
-    setCurrentPopupConfig(null);
-  };
+  await loadPopups();
+  setCurrentPopupConfig(null);
+};
 
   const handleDeletePopup = async (id) => {
 
